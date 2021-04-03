@@ -3,6 +3,7 @@ const STACK_SIZE usize = 16;
 
 use memory;
 
+
 pub struct Cpu {
     register: [u8; REGISTER_SIZE],
     i_reg: u16,
@@ -26,5 +27,19 @@ impl Cpu {
         }
     }
 
+    pub fn delay_timer(&mut self) {
+       if self.delay_timer > 0 {
+            let self.delay_timer = self.delay_timer - 1;
+       }
+    }
+
+    pub fn sound_timer(&mut self) {
+        if self.sound_timer > 0 {
+            let self.sound_timer = self.sound_timer - 1;
+            if self.sound_timer == 0 {
+                //make beep
+            }
+       }
+    }
     //---------
 }

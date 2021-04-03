@@ -18,9 +18,10 @@ const SPRITE: [u8; 80] = [
     0xF0, 0x80, 0xF0, 0x80, 0xF0, /* e */
     0xF0, 0x80, 0xF0, 0x80, 0x80, /* f */
 ];
+pub type Mem = [u8; CHIP8_RAM_SIZE];
 
 pub struct Memory {
-    memory: [u8; CHIP8_RAM_SIZE],
+    memory: Mem,
 }
 
 impl Memory {
@@ -32,6 +33,10 @@ impl Memory {
         }
 
         Memory { memory }
+    }
+
+    pub fn get_memory(&mut self) -> Mem {
+        self.memory
     }
 
     //----------
