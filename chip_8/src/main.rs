@@ -1,11 +1,12 @@
 mod keyboard;
 mod display;
-mod memory;
+mod instructions;
+mod cpu_specs;
 
 use keyboard::Keyboard8;
 use minifb::{Key, Window, WindowOptions};
 use display::Display;
-use memory::Memory;
+
 
 fn main() {
     let key = Keyboard8::from_key(Key::A);
@@ -19,34 +20,17 @@ fn main() {
             println!("Unable to create window {}", err);
             return;
         }
-    };
+    }; 
 
-    let mut memory = Memory::new();
+    //Test
+    let test = (0xB34A >> 8) & 0xF;
+    println!("{}", test);
+    //.....
+
     let mut display = Display::new();
-
-    let mem = memory.get_memory();
-    display.draw(10, 1, &mem[5..10]);
-    display.draw(15, 1, &mem[10..15]);
-    display.draw(20, 1, &mem[15..20]);
-    display.draw(25, 1, &mem[60..65]);
-
-    display.draw(10, 7, &mem[20..25]);
-    display.draw(15, 7, &mem[25..30]);
-    display.draw(20, 7, &mem[30..35]);
-    display.draw(25, 7, &mem[65..70]);
-
-    display.draw(10, 13, &mem[35..40]);
-    display.draw(15, 13, &mem[40..45]);
-    display.draw(20, 13, &mem[45..50]);
-    display.draw(25, 13, &mem[70..75]);
-
-    display.draw(10, 19, &mem[50..55]);
-    display.draw(15, 19, &mem[0..5]);
-    display.draw(20, 19, &mem[55..60]);
-    display.draw(25, 19, &mem[75..80]);
-
     let display_buffer = display.get_buffer();
 
+    //convert display_buffer to window_buffer
     for y in 0..320 {
         let y_coord = y / 10;
         let buffer_offset = y * 640;
