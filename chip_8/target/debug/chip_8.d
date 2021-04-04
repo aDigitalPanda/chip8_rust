@@ -1,1 +1,0 @@
-E:\git_repo\Home\chip8_rust\chip8_rust\chip_8\target\debug\chip_8.exe: E:\git_repo\Home\chip8_rust\chip8_rust\chip_8\src\cpu_specs.rs E:\git_repo\Home\chip8_rust\chip8_rust\chip_8\src\display.rs E:\git_repo\Home\chip8_rust\chip8_rust\chip_8\src\instructions.rs E:\git_repo\Home\chip8_rust\chip8_rust\chip_8\src\keyboard.rs E:\git_repo\Home\chip8_rust\chip8_rust\chip_8\src\main.rs
