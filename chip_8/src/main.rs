@@ -6,7 +6,7 @@ mod cpu_specs;
 use keyboard::Keyboard8;
 use minifb::{Key, Window, WindowOptions};
 use display::Display;
-
+use cpu_specs::Cpu;
 
 fn main() {
     let key = Keyboard8::from_key(Key::A);
@@ -26,7 +26,7 @@ fn main() {
     let test = (0xB34A >> 8) & 0xF;
     println!("{}", test);
     //.....
-
+    let cpu = Cpu::new();
     let mut display = Display::new();
     let display_buffer = display.get_buffer();
 
