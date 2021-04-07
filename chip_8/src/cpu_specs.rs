@@ -1,7 +1,9 @@
 use crate::instructions::{Instruction, Input};
 use crate::display::Display;
+use crate::keyboard::Keyboard8;
 
 use rand::{thread_rng, Rng};
+use minifb::Window;
 
 const REGISTER_SIZE: usize = 16;
 const STACK_SIZE: usize = 16;
@@ -39,15 +41,20 @@ pub struct Cpu {
     stack: [u16; STACK_SIZE],
     memory: Mem,
     display: Display,
+    need_key: Option<u8>,
 }
 
 impl Cpu {
-    pub fn new() -> Cpu {
+    pub fn new(program: Vec<u8>) -> Cpu {
         let mut memory = [0; CHIP8_RAM_SIZE];
         let mut display = Display::new();
 
         for (i, value) in SPRITE.iter().enumerate() {
             memory[i] = *value;
+        }
+
+        for (i, value) in program.iter().enumerate() {
+            memory[CHIP8_RAM_OFFSET + i] = *value;
         }
 
         Cpu {
@@ -60,6 +67,7 @@ impl Cpu {
             stack: [0; STACK_SIZE],
             memory: memory,
             display: display,
+            need_key: None,
         }
     }
 
@@ -79,9 +87,9 @@ impl Cpu {
     }
     //---------
 
-    fn instruction(&mut self, instruction: &Instruction) -> u16 {
+    pub fn instruction(&mut self, instruction: &Instruction, window: &Window) -> u16 {
         match *instruction {
-            Instruction::SystemJump(address) => self.program_counter,
+            Instruction::SystemJump(_address) => self.program_counter,
             Instruction::Clear => { 
                 self.display.clear();
                 self.program_counter
@@ -127,7 +135,8 @@ impl Cpu {
             },
             Instruction::Add(register, byte) => {
                 let value = self.get_reg(register);
-                self.set_reg(byte + value, register);
+                let add: u16 = value as u16 + byte as u16;
+                self.set_reg(add as u8, register);
                 self.program_counter + 2
             },
             Instruction::RegisterInRegister(register1, register2) => {
@@ -223,13 +232,34 @@ impl Cpu {
                 self.register[0xF] = self.display.draw(x, y, &self.memory[from..to]) as u8;
                 self.program_counter + 2
             },
-            //Instruction::SkipIfPressed(register) => 
-            //Instruction::SkipIfNotPressed(register) => 
+            Instruction::SkipIfPressed(register) => {
+                let key_value = self.get_reg(register);
+                let key = Keyboard8::new_key(key_value).unwrap();
+                let key_press = Keyboard8::to_key(key).unwrap();
+                if window.is_key_down(key_press) {
+                    self.program_counter + 4
+                } else {
+                    self.program_counter + 2
+                }
+            },
+            Instruction::SkipIfNotPressed(register) => {
+                let key_value = self.get_reg(register);
+                let key = Keyboard8::new_key(key_value).unwrap();
+                let key_press = Keyboard8::to_key(key).unwrap();
+                if !window.is_key_down(key_press) {
+                    self.program_counter + 4
+                } else {
+                    self.program_counter + 2
+                }
+            },
             Instruction::GetDelayTimerInRegister(register) => {
                 self.set_reg(self.delay_timer, register);
                 self.program_counter + 2
             },
-            //Instruction::WaitAndStoreKey(register) => 
+            Instruction::WaitAndStoreKey(register) => {
+                self.need_key = Some(register);
+                self.program_counter + 2
+            },
             Instruction::SetDelayTimer(register) => {
                 self.delay_timer = self.get_reg(register);
                 self.program_counter + 2
@@ -273,13 +303,35 @@ impl Cpu {
                 }
                 self.program_counter + 2
             },
-            
-            //just a placeholder
-            _ => self.program_counter,
         }
     }
 
-    fn get_reg(&self, pos: u8) -> u8 {
+    pub fn instruction_cycle(&mut self, window: &Window) {
+        for _ in 0..7 {
+            if self.need_key == None {
+                let instruction = self.get_instructions();
+                self.program_counter = self.instruction(&instruction, window);
+            }
+        }
+    }
+
+    fn get_instructions(&self) -> Instruction {
+        let pc = self.program_counter as usize;
+        let msb = (self.memory[pc] as u16) << 8 ;
+        let lsb = self.memory[pc + 1] as u16;
+        Input::new(msb + lsb).input_to_instruction().expect("False input!")
+    }
+
+    pub fn key_handle(&mut self, key: Option<Keyboard8>) {
+        if let Some(register) = self.need_key {
+            if let Some(key) = key {
+                self.set_reg(key as u8, register);
+            self.need_key = None
+            }
+        }
+    }
+    //pub for testing
+    pub fn get_reg(&self, pos: u8) -> u8 {
         self.register[pos as usize] as u8
     }
 

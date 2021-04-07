@@ -42,4 +42,47 @@ impl Keyboard8 {
             _ => None,
         }
     }
+
+    pub fn to_key(key: Keyboard8) -> Option<Key> {
+        match key {
+            Keyboard8::Key2 => Some(Key::Key1),
+            Keyboard8::Key3 => Some(Key::Key2),
+            Keyboard8::Key4 => Some(Key::Key3),
+            Keyboard8::Key13 => Some(Key::Key4),
+            Keyboard8::Key5 => Some(Key::Q),
+            Keyboard8::Key6 => Some(Key::W),
+            Keyboard8::Key7 => Some(Key::E),
+            Keyboard8::Key14 => Some(Key::R),
+            Keyboard8::Key8 => Some(Key::A),
+            Keyboard8::Key9 => Some(Key::S),
+            Keyboard8::Key10 => Some(Key::D),
+            Keyboard8::Key15 => Some(Key::F),
+            Keyboard8::Key11 => Some(Key::Y),
+            Keyboard8::Key1 => Some(Key::X),
+            Keyboard8::Key12 => Some(Key::C),
+            Keyboard8::Key16 => Some(Key::V),
+        }
+    }
+
+    pub fn new_key(value: u8) -> Option<Keyboard8> {
+        match value {
+            0x0 => Some(Keyboard8::Key1),
+            0x1 => Some(Keyboard8::Key2),
+            0x2 => Some(Keyboard8::Key3),
+            0x3 => Some(Keyboard8::Key4),
+            0x4 => Some(Keyboard8::Key5),
+            0x5 => Some(Keyboard8::Key6),
+            0x6 => Some(Keyboard8::Key7),
+            0x7 => Some(Keyboard8::Key8),
+            0x8 => Some(Keyboard8::Key9),
+            0x9 => Some(Keyboard8::Key10),
+            0xA => Some(Keyboard8::Key11),
+            0xB => Some(Keyboard8::Key12),
+            0xC => Some(Keyboard8::Key13),
+            0xD => Some(Keyboard8::Key14),
+            0xE => Some(Keyboard8::Key15),
+            0xF => Some(Keyboard8::Key16),
+            _ => None,
+        }
+    }
 }

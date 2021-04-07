@@ -50,7 +50,7 @@ impl Input {
         Input {input: input}
     }
 
-    pub fn InputToInstruction(&self) -> Option<Instruction> {
+    pub fn input_to_instruction(&self) -> Option<Instruction> {
         match self.xooo() as u8 {
             0x0 => match self.oxxx() {
                 0x0E0 => Some(Instruction::Clear),
