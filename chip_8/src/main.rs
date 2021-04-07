@@ -5,7 +5,6 @@ mod cpu_specs;
 
 use keyboard::Keyboard8;
 use minifb::{Key, Window, WindowOptions, KeyRepeat};
-use display::Display;
 use cpu_specs::Cpu;
 use std::fs;
 
@@ -17,33 +16,19 @@ fn main() {
             return;
         }
     };
-    
     let program = fs::read("c8games/TETRIS").expect("Failure");
-
-    let mut cpu = Cpu::new(program);
-    
+    let mut cpu = Cpu::new(program); 
     let mut buffer: Vec<u32> = vec![0; 640 * 320];
-
-
-
 
     window.limit_update_rate(Some(std::time::Duration::from_micros(16600)));
 
     while window.is_open() && !window.is_key_down(Key::Escape) {
-        // for (id, i) in buffer.iter_mut().enumerate() {
-        //     if id % 2 == 0 {
-        //         *i = *i;
-        //     } else {
-        //         *i = *i;
-        //     } // write something more funny here! (FF,FF,FF) = 0xFFFFFF
-        // }
-        
-        //Run Program and update buffer
+        // Run Program and update buffer
         cpu.instruction_cycle(&window);
         let display_buffer = cpu.display.get_buffer();
         //---------------------------
 
-        //handle key press
+        // handle key press
         let key_pressed = window.get_keys_pressed(KeyRepeat::Yes);
         let key = match key_pressed {
             Some(keys) => if !keys.is_empty() {
@@ -57,12 +42,12 @@ fn main() {
         cpu.key_handle(chip8_key);
         //-----------------
 
-        //timer decrement
+        // timer decrement
         cpu.delay_timer();
         cpu.sound_timer();
         //----------------
     
-        //Fill Buffer for the drawing
+        // Fill Buffer for the drawing
         for y in 0..320 {
             let y_coord = y / 10;
             let buffer_offset = y * 640;

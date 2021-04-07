@@ -47,7 +47,7 @@ pub struct Cpu {
 impl Cpu {
     pub fn new(program: Vec<u8>) -> Cpu {
         let mut memory = [0; CHIP8_RAM_SIZE];
-        let mut display = Display::new();
+        let  display = Display::new();
 
         for (i, value) in SPRITE.iter().enumerate() {
             memory[i] = *value;
@@ -73,21 +73,40 @@ impl Cpu {
 
     pub fn delay_timer(&mut self) {
        if self.delay_timer > 0 {
-            self.delay_timer = self.delay_timer - 1;
+            self.delay_timer -= 1;
        }
     }
 
     pub fn sound_timer(&mut self) {
         if self.sound_timer > 0 {
-            self.sound_timer = self.sound_timer - 1;
+            self.sound_timer -= 1;
             if self.sound_timer == 0 {
                 //make beep
             }
        }
     }
+
+    pub fn key_handle(&mut self, key: Option<Keyboard8>) {
+        if let Some(register) = self.need_key {
+            if let Some(key) = key {
+                self.set_reg(key as u8, register);
+                self.need_key = None
+            }
+        }
+    }
+
+    pub fn instruction_cycle(&mut self, window: &Window) {
+        for _ in 0..25 {
+            if self.need_key == None {
+                let instruction = self.get_instructions();
+                //println!("{:#X?}", self.program_counter);
+                self.program_counter = self.instruction(&instruction, window);
+            }
+        }
+    }
     //---------
 
-    pub fn instruction(&mut self, instruction: &Instruction, window: &Window) -> u16 {
+    fn instruction(&mut self, instruction: &Instruction, window: &Window) -> u16 {
         match *instruction {
             Instruction::SystemJump(_address) => self.program_counter,
             Instruction::Clear => { 
@@ -306,16 +325,6 @@ impl Cpu {
         }
     }
 
-    pub fn instruction_cycle(&mut self, window: &Window) {
-        for _ in 0..20 {
-            if self.need_key == None {
-                let instruction = self.get_instructions();
-                //println!("{:#X?}", self.program_counter);
-                self.program_counter = self.instruction(&instruction, window);
-            }
-        }
-    }
-
     fn get_instructions(&self) -> Instruction {
         let pc = self.program_counter as usize;
         let msb = (self.memory[pc] as u16) << 8 ;
@@ -323,16 +332,7 @@ impl Cpu {
         Input::new(msb + lsb).input_to_instruction().expect("False input!")
     }
 
-    pub fn key_handle(&mut self, key: Option<Keyboard8>) {
-        if let Some(register) = self.need_key {
-            if let Some(key) = key {
-                self.set_reg(key as u8, register);
-            self.need_key = None
-            }
-        }
-    }
-    //pub for testing
-    pub fn get_reg(&self, pos: u8) -> u8 {
+    fn get_reg(&self, pos: u8) -> u8 {
         self.register[pos as usize] as u8
     }
 

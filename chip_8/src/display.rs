@@ -14,7 +14,7 @@ impl Display {
         }
     }
 
-    //memory gibt einen Bereich der Länge äzwischen 1 - 15
+    // memory gibt einen Bereich der Länge zwischen 1 - 15
     pub fn draw(&mut self, x_start: u8, y_start: u8, memory: &[u8]) -> bool {
         let mut pixel_changed = false;
 
