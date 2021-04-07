@@ -40,7 +40,7 @@ pub struct Cpu {
     stack_pointer: u8,
     stack: [u16; STACK_SIZE],
     memory: Mem,
-    display: Display,
+    pub display: Display,
     need_key: Option<u8>,
 }
 
@@ -92,7 +92,7 @@ impl Cpu {
             Instruction::SystemJump(_address) => self.program_counter,
             Instruction::Clear => { 
                 self.display.clear();
-                self.program_counter
+                self.program_counter + 2
             },
             Instruction::Return => {
                 if self.stack_pointer > 0 {
@@ -174,7 +174,7 @@ impl Cpu {
                 } else {
                     self.register[0xf] = 0;
                 }
-                self.set_reg(self.get_reg(register1) - self.get_reg(register2), register1);
+                self.set_reg(self.get_reg(register1).overflowing_sub(self.get_reg(register2)).0, register1);
                 self.program_counter + 2
             },
             Instruction::ShiftRight(register) => {
@@ -307,9 +307,10 @@ impl Cpu {
     }
 
     pub fn instruction_cycle(&mut self, window: &Window) {
-        for _ in 0..7 {
+        for _ in 0..20 {
             if self.need_key == None {
                 let instruction = self.get_instructions();
+                //println!("{:#X?}", self.program_counter);
                 self.program_counter = self.instruction(&instruction, window);
             }
         }

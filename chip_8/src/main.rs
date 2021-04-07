@@ -18,13 +18,12 @@ fn main() {
         }
     };
     
-    let program = fs::read("snake.ch8").expect("Failure");
-
+    let program = fs::read("c8games/TETRIS").expect("Failure");
 
     let mut cpu = Cpu::new(program);
-    let mut display = Display::new();
-    let display_buffer = display.get_buffer();
+    
     let mut buffer: Vec<u32> = vec![0; 640 * 320];
+
 
 
 
@@ -38,9 +37,11 @@ fn main() {
         //         *i = *i;
         //     } // write something more funny here! (FF,FF,FF) = 0xFFFFFF
         // }
-
+        
+        //Run Program and update buffer
         cpu.instruction_cycle(&window);
-
+        let display_buffer = cpu.display.get_buffer();
+        //---------------------------
 
         //handle key press
         let key_pressed = window.get_keys_pressed(KeyRepeat::Yes);
@@ -60,8 +61,8 @@ fn main() {
         cpu.delay_timer();
         cpu.sound_timer();
         //----------------
-
-        // We unwrap here as we want this code to exit if it fails. Real applications may want to handle this in a different way
+    
+        //Fill Buffer for the drawing
         for y in 0..320 {
             let y_coord = y / 10;
             let buffer_offset = y * 640;
@@ -75,6 +76,9 @@ fn main() {
                 buffer[buffer_offset + x] = color;
             }
         }
+        //------------------------------
+
+        // We unwrap here as we want this code to exit if it fails. Real applications may want to handle this in a different way
         window
             .update_with_buffer(&buffer, 640, 320)
             .unwrap();
