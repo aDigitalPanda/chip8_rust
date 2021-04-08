@@ -20,7 +20,7 @@ I can only recommend to everyone who wants to 'learn' a new language to try impl
 
 ## References
 Here are some references i used to understand Chip-8 and other aspect of it.  
-- Cowgod's [Chip-8 Technical Reference](http://devernay.free.fr/hacks/chip8/C8TECH10.HTM) Technical Reference  
+- Cowgod's [Chip-8 Technical Reference](http://devernay.free.fr/hacks/chip8/C8TECH10.HTM)
 - Matthew Mikolay [Mastering Chip-8](https://github.com/mattmikolay/chip-8/wiki/Mastering-CHIP%E2%80%908)  
 - [Chip-8 Sprites](http://www.emulator101.com/chip-8-sprites.html)  
 - John Earnest [Chip8 Programming](https://github.com/JohnEarnest/Octo/blob/gh-pages/docs/Chip8%20Programming.md)
