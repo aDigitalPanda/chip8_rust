@@ -41,6 +41,9 @@ pub enum Instruction {
     LoadRegister(Register),
 }
 
+
+// struct to convert an hexadecimal input to an Instruction with the corresponding parameters
+// input: u16 the input which gets converted
 pub struct Input {
     input: u16, 
 }
@@ -50,6 +53,7 @@ impl Input {
         Input {input: input}
     }
 
+    // convert function, using helping functions to split the input to parameters
     pub fn input_to_instruction(&self) -> Option<Instruction> {
         match self.xooo() as u8 {
             0x0 => match self.oxxx() {
@@ -101,7 +105,14 @@ impl Input {
             _ => None,
         }
     }
-
+    // all below functions return the 4-bit parts of the input with the x 
+    // example:
+    //   0x1234 with xooo -> 0x1
+    //   0x1234 with oxxx -> 0x234
+    //   0x1234 with ooxx -> 0x34
+    //   0x1234 with oxoo -> 0x2
+    //   0x1234 with ooxo -> 0x3
+    //   0x1234 with ooox -> 0x4
     fn xooo(&self) -> u8 {
         ((self.input >> 12) & 0xF) as u8
     }

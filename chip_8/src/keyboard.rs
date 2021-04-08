@@ -21,6 +21,14 @@ pub enum Keyboard8 {
 }
 
 impl Keyboard8 {
+    // Converts a Key Input to a from the Keyboard the the specific Chip8-Key
+    // Layout:
+    //       1 2 3 4            1 2 3 C 
+    //       Q W E R     ->     4 5 6 D
+    //       A S D F            7 8 9 E
+    //       Y X C V            A 0 B F
+    // parameter: key as Key from minifb
+    // return: Option<Keyboard8>
     pub fn from_key(key: Key) -> Option<Keyboard8> {
         match key {
             Key::Key1 => Some(Keyboard8::Key2),
@@ -42,7 +50,9 @@ impl Keyboard8 {
             _ => None,
         }
     }
-
+    // Converts Chip8-Key to the corresponding Key
+    // parameter: Keyboard8
+    // return: Option<Key> from minifb
     pub fn to_key(key: Keyboard8) -> Option<Key> {
         match key {
             Keyboard8::Key2 => Some(Key::Key1),
@@ -63,7 +73,9 @@ impl Keyboard8 {
             Keyboard8::Key16 => Some(Key::V),
         }
     }
-
+    // Used to get the Key-Value from an u8
+    // paramter: u8
+    // return: Option<Keyboard8>
     pub fn new_key(value: u8) -> Option<Keyboard8> {
         match value {
             0x0 => Some(Keyboard8::Key1),

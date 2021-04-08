@@ -7,18 +7,29 @@ use keyboard::Keyboard8;
 use minifb::{Key, Window, WindowOptions, KeyRepeat};
 use cpu_specs::Cpu;
 use std::fs;
+use std::env;
+
+const WINDOW_WIDTH: usize = 640;
+const WINDOW_HEIGHT: usize = 320;
+const WINDOW_SCALE: usize = WINDOW_HEIGHT / 32;
+const GAME_DIR: &str = "c8games/";
 
 fn main() {
-    let mut window = match Window::new("Test", 640, 320, WindowOptions::default()) {
+    // get the programm from command line
+    let args: Vec<String> = env::args().collect();
+    let file_location = GAME_DIR.to_owned() + &args[1];
+
+
+    let mut window = match Window::new(&args[1], WINDOW_WIDTH, WINDOW_HEIGHT, WindowOptions::default()) {
         Ok(win) => win,
         Err(err) => {
             println!("Unable to create window {}", err);
             return;
         }
     };
-    let program = fs::read("c8games/TETRIS").expect("Failure");
+    let program = fs::read(file_location).expect("Failure");
     let mut cpu = Cpu::new(program); 
-    let mut buffer: Vec<u32> = vec![0; 640 * 320];
+    let mut buffer: Vec<u32> = vec![0; WINDOW_HEIGHT * WINDOW_WIDTH];
 
     window.limit_update_rate(Some(std::time::Duration::from_micros(16600)));
 
@@ -47,12 +58,12 @@ fn main() {
         cpu.sound_timer();
         //----------------
     
-        // Fill Buffer for the drawing
-        for y in 0..320 {
-            let y_coord = y / 10;
-            let buffer_offset = y * 640;
-            for x in 0..640 {
-                let x_coord = x / 10;
+        // Fill Buffer for the drawing with respect of the scaling
+        for y in 0..WINDOW_HEIGHT {
+            let y_coord = y / WINDOW_SCALE;
+            let buffer_offset = y * WINDOW_WIDTH;
+            for x in 0..WINDOW_WIDTH {
+                let x_coord = x / WINDOW_SCALE;
                 let color = if display_buffer[y_coord][x_coord] {
                     0xFFFFFF
                 } else {
@@ -63,9 +74,9 @@ fn main() {
         }
         //------------------------------
 
-        // We unwrap here as we want this code to exit if it fails. Real applications may want to handle this in a different way
+        // update the window with our buffer 
         window
-            .update_with_buffer(&buffer, 640, 320)
+            .update_with_buffer(&buffer, WINDOW_WIDTH, WINDOW_HEIGHT)
             .unwrap();
     }
 }

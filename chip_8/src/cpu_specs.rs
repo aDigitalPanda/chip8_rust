@@ -8,7 +8,9 @@ use minifb::Window;
 const REGISTER_SIZE: usize = 16;
 const STACK_SIZE: usize = 16;
 const CHIP8_RAM_SIZE: usize = 4096;
-const CHIP8_RAM_OFFSET: usize = 0x200;
+const CHIP8_RAM_OFFSET: usize = 0x200;  // memory before 0x200 is "reserved"
+const RUN_SIZE: usize = 25;             // how many instructions are executed per window update
+// binary representation of the 16 one-byte values for drawing
 const SPRITE: [u8; 80] = [
     0xF0, 0x90, 0x90, 0x90, 0xF0, /* 0 */
     0x20, 0x60, 0x20, 0x20, 0x70, /* 1 */
@@ -96,16 +98,14 @@ impl Cpu {
     }
 
     pub fn instruction_cycle(&mut self, window: &Window) {
-        for _ in 0..25 {
+        for _ in 0..RUN_SIZE {
             if self.need_key == None {
                 let instruction = self.get_instructions();
-                //println!("{:#X?}", self.program_counter);
                 self.program_counter = self.instruction(&instruction, window);
             }
         }
     }
     //---------
-
     fn instruction(&mut self, instruction: &Instruction, window: &Window) -> u16 {
         match *instruction {
             Instruction::SystemJump(_address) => self.program_counter,
