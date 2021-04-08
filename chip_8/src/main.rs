@@ -65,7 +65,7 @@ fn main() {
             for x in 0..WINDOW_WIDTH {
                 let x_coord = x / WINDOW_SCALE;
                 let color = if display_buffer[y_coord][x_coord] {
-                    0xFFFFFF
+                    0x3fefc4
                 } else {
                     0x000000
                 };
