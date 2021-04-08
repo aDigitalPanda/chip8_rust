@@ -1,12 +1,12 @@
 # chip8_rust by aDigitalPanda
 
-A basic Chip-8 emulator implementation written in Rust.
+A basic Chip-8 implementation written in Rust.
 
 ## How to run
 Find yourself some chip-8 ROMs online. Like [those](https://www.zophar.net/pdroms/chip8/chip-8-games-pack.html). Copy them into the **chip_8** directory, prefered into a new directory *xy*.  
 In **main.rs** change *GAME_DIR* value like this:
 ```rust
-const GAME_DIR: &str = "xy/" // or "" if ROMs are in chip-8 directory
+const GAME_DIR: &str = "xy/" // or "" if ROMs are directly in chip-8 directory
 ```
 To run it, use
 ```bash
