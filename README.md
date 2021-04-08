@@ -14,9 +14,9 @@ cargo run ROM_NAME
 ```
 
 ## Inspiration for implementing
-I wanted to learn Rust and after completing the [book](https://doc.rust-lang.org/book/title-page.html) I searched for a new project.  
+I wanted to learn Rust and after completing the [book](https://doc.rust-lang.org/book/title-page.html), I searched for a new project.  
 After some time I heard about Chip-8, highly praised to be an *easy* project to get used to an language. So here I am.  
-I can only recommend to everyone who wants to 'learn' a new language to try implement a Chip-8 emulator.
+I can only recommend to everyone who wants to 'learn' a new language to try implement a Chip-8 emulator, it really helps getting used to the basics while letting room to *optimize* or using more *complex* programming techniques.
 
 ## References
 Here are some references i used to understand Chip-8 and other aspect of it.  
