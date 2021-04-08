@@ -1,5 +1,5 @@
 # chip8_rust by aDigitalPanda
-
+![Screenshot](/chip8.PNG?raw=true "The emulator running 'maze'")  
 A basic Chip-8 implementation written in Rust.
 
 ## How to run
